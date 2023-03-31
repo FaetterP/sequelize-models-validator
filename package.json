@@ -1,0 +1,28 @@
+{
+  "name": "sequelize-models-validator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FaetterP/sequelize-models-validator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FaetterP/sequelize-models-validator/issues"
+  },
+  "homepage": "https://github.com/FaetterP/sequelize-models-validator#readme",
+  "dependencies": {
+    "config": "^3.3.9",
+    "jest": "^29.5.0",
+    "sequelize": "^6.30.0",
+    "sequelize-typescript": "^2.1.5",
+    "ts-jest": "^29.0.5",
+    "typescript": "^5.0.3"
+  }
+}
