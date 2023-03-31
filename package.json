@@ -20,6 +20,7 @@
   "dependencies": {
     "config": "^3.3.9",
     "jest": "^29.5.0",
+    "pg": "^8.10.0",
     "sequelize": "^6.30.0",
     "sequelize-typescript": "^2.1.5",
     "ts-jest": "^29.0.5",

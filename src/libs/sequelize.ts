@@ -8,7 +8,6 @@ export type ConnectionOptionsType = {
   database: string;
   user: string;
   password: string;
-  pool?: PoolOptions;
 };
 
 export async function connect(): Promise<Sequelize> {
@@ -20,7 +19,7 @@ export async function connect(): Promise<Sequelize> {
     database: options.database,
     username: options.user,
     password: options.password,
-    models: [`path`],
+    models: [process.argv[2]],
   });
 
   return sequelize;
