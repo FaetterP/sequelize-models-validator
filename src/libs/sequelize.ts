@@ -10,10 +10,12 @@ export type ConnectionOptionsType = {
   password: string;
 };
 
+let sequelize: Sequelize | undefined;
+
 export async function connect(): Promise<Sequelize> {
   const options = config.get<ConnectionOptionsType>("db");
 
-  const sequelize = new Sequelize({
+  sequelize = new Sequelize({
     dialect: options.dialect || "postgres",
     host: options.host,
     database: options.database,
@@ -23,4 +25,12 @@ export async function connect(): Promise<Sequelize> {
   });
 
   return sequelize;
+}
+
+export async function getSequelize(): Promise<Sequelize> {
+  if (!sequelize) {
+    await connect();
+  }
+
+  return sequelize!;
 }
