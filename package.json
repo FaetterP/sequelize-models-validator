@@ -28,5 +28,8 @@
   },
   "devDependencies": {
     "@types/config": "^3.3.0"
+  },
+  "bin": {
+    "validate-models": "/dist/index.js"
   }
 }

@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 import { checkAll } from "./checkers";
 import { connect } from "./libs/sequelize";
 
