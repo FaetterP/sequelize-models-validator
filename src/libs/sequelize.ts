@@ -22,6 +22,7 @@ export async function connect(): Promise<Sequelize> {
     username: options.user,
     password: options.password,
     models: [process.argv[2]],
+    logging: false,
   });
 
   return sequelize;
