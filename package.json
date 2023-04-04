@@ -1,6 +1,6 @@
 {
   "name": "sequelize-models-validator",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -20,11 +20,10 @@
   "dependencies": {
     "colors": "^1.4.0",
     "config": "^3.3.9",
-    "jest": "^29.5.0",
     "pg": "^8.10.0",
     "sequelize": "^6.30.0",
     "sequelize-typescript": "^2.1.5",
-    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.3"
   },
   "devDependencies": {
