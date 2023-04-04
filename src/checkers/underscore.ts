@@ -11,7 +11,7 @@ export function checkUnderscore(model: ModelCtor<Model<any, any>>) {
 
   for (const key in attributes) {
     if (key.includes("_")) {
-      console.log(`[${colors.yellow("WARN")} underscore] Model '${model.name}' contains field '${key}'.`);
+      console.log(`[${colors.yellow("WARN")} underscore] Model '${colors.green(model.name)}' contains field '${colors.blue(key)}'.`);
     }
   }
 }
