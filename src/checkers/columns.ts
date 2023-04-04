@@ -27,9 +27,9 @@ export async function checkColumns(model: ModelCtor<Model<any, any>>) {
   });
 
   for (const column of missingColumns) {
-    console.log(`model '${model.name}' miss column '${column}'`);
+    console.log(`[${"ERROR".red} column] Model '${model.name}' miss column '${column}'.`);
   }
   for (const column of excessColumns) {
-    console.log(`model '${model.name}' has excess column '${column}'`);
+    console.log(`[${"ERROR".red} column] Model '${model.name}' has excess column '${column}'.`);
   }
 }

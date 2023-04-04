@@ -3,6 +3,7 @@ import { checkColumns } from "./columns";
 import { checkParanoid } from "./paranoid";
 import { checkTimestamps } from "./timestamps";
 import { checkUnderscore } from "./underscore";
+import colors from "colors"
 
 const checkers: ((
   model: ModelCtor<Model<any, any>>

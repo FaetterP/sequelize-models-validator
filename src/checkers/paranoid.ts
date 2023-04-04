@@ -11,13 +11,13 @@ export function checkParanoid(model: ModelCtor<Model<any, any>>) {
 
   if (!options.timestamps) {
     console.log(
-      `${model.tableName}: paranoid is true, but timestamps not enabled`
+      `[${"ERROR".red} paranoid] ${model.tableName}: paranoid is true, but timestamps not enabled.`
     );
   }
 
   let deletedAtName = options.underscored ? "deletedAt" : "deleted_at";
 
   if (!keys.includes(deletedAtName)) {
-    console.log(`table '${model.name}' doesn't contain '${deletedAtName}'`);
+    console.log(`[${"WARN".yellow} paranoid] Model '${model.name}' doesn't contain '${deletedAtName}'.`);
   }
 }
