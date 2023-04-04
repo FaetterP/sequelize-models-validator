@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
-import { Dialect, PoolOptions } from "sequelize";
+import { Dialect } from "sequelize";
 import config from "config";
+import path from "node:path";
 
 export type ConnectionOptionsType = {
   dialect?: Dialect;
@@ -14,6 +15,7 @@ let sequelize: Sequelize | undefined;
 
 export async function connect(): Promise<Sequelize> {
   const options = config.get<ConnectionOptionsType>("db");
+  const fullPath = path.join(process.cwd(), process.argv[2]);
 
   sequelize = new Sequelize({
     dialect: options.dialect || "postgres",
@@ -21,7 +23,7 @@ export async function connect(): Promise<Sequelize> {
     database: options.database,
     username: options.user,
     password: options.password,
-    models: [process.argv[2]],
+    models: [fullPath],
     logging: false,
   });
 
