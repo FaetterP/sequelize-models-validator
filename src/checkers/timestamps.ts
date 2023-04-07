@@ -1,5 +1,7 @@
 import { Model, ModelCtor } from "sequelize";
-import colors from "colors"
+import { formatColumn, formatModel, getWarning } from "../utils/messages";
+
+const checkerName = "timestamps";
 
 export function checkTimestamps(model: ModelCtor<Model<any, any>>) {
   const options = model.options;
@@ -14,9 +16,17 @@ export function checkTimestamps(model: ModelCtor<Model<any, any>>) {
   let updatedAtName = options.underscored ? "updatedAt" : "updated_at";
 
   if (!keys.includes(createdAtName)) {
-    console.log(`[${colors.yellow("WARN")} timestamps] Model '${colors.green(model.name)}' doesn't contain '${colors.blue(createdAtName)}'.`);
+    const message = getWarning(
+      checkerName,
+      `Model ${formatModel(model.name)} doesn't contain ${formatColumn(createdAtName)}.`
+    );
+    console.log(message);
   }
   if (!keys.includes(updatedAtName)) {
-    console.log(`[${colors.yellow("WARN")} timestamps] Model '${colors.green(model.name)}' doesn't contain '${colors.blue(updatedAtName)}'.`);
+    const message = getWarning(
+      checkerName,
+      `Model ${formatModel(model.name)} doesn't contain ${formatColumn(updatedAtName)}.`
+    );
+    console.log(message);
   }
 }

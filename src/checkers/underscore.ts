@@ -1,5 +1,7 @@
 import { Model, ModelCtor } from "sequelize";
-import colors from "colors"
+import { formatColumn, formatModel, getWarning } from "../utils/messages";
+
+const checkerName = "underscore";
 
 export function checkUnderscore(model: ModelCtor<Model<any, any>>) {
   const options = model.options;
@@ -9,9 +11,13 @@ export function checkUnderscore(model: ModelCtor<Model<any, any>>) {
     return;
   }
 
-  for (const key in attributes) {
-    if (key.includes("_")) {
-      console.log(`[${colors.yellow("WARN")} underscore] Model '${colors.green(model.name)}' contains field '${colors.blue(key)}'.`);
+  for (const field in attributes) {
+    if (field.includes("_")) {
+      const message = getWarning(
+        checkerName,
+        `Model ${formatModel(model.name)} contains field ${formatColumn(field)}.`
+      );
+      console.log(message);
     }
   }
 }

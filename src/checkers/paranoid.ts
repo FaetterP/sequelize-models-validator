@@ -1,5 +1,7 @@
 import { Model, ModelCtor } from "sequelize";
-import colors from "colors"
+import { formatColumn, formatModel, getError } from "../utils/messages";
+
+const checkerName = "paranoid";
 
 export function checkParanoid(model: ModelCtor<Model<any, any>>) {
   const options = model.options;
@@ -11,14 +13,17 @@ export function checkParanoid(model: ModelCtor<Model<any, any>>) {
   }
 
   if (!options.timestamps) {
-    console.log(
-      `[${colors.red("ERROR")} paranoid] ${colors.green(model.tableName)}: paranoid is true, but timestamps not enabled.`
+    const message = getError(
+      checkerName,
+      `${formatModel(model.tableName)}: paranoid is true, but timestamps not enabled.`
     );
+    console.log(message);
   }
 
   let deletedAtName = options.underscored ? "deletedAt" : "deleted_at";
 
   if (!keys.includes(deletedAtName)) {
-    console.log(`[${colors.yellow("WARN")} paranoid] Model '${colors.green(model.name)}' doesn't contain '${colors.blue(deletedAtName)}'.`);
+    const message = getError(checkerName, `Model ${formatModel(model.name)} doesn't contain ${formatColumn(deletedAtName)}.`)
+    console.log(message);
   }
 }

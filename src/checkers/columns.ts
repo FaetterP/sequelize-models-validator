@@ -1,7 +1,9 @@
 import { Model, ModelCtor, QueryTypes } from "sequelize";
 import { snakeToCamel } from "./../utils/converts";
 import { getSequelize } from "../libs/sequelize";
-import colors from "colors"
+import { formatColumn, formatModel, getError } from "../utils/messages";
+
+const checkerName = "columns";
 
 export async function checkColumns(model: ModelCtor<Model<any, any>>) {
   const attributes = model.getAttributes();
@@ -28,9 +30,17 @@ export async function checkColumns(model: ModelCtor<Model<any, any>>) {
   });
 
   for (const column of missingColumns) {
-    console.log(`[${colors.red("ERROR")} column] Model '${colors.green(model.name)}' miss column '${colors.blue(column)}'.`);
+    const message = getError(
+      checkerName,
+      `Model ${formatModel(model.name)} miss column ${formatColumn(column)}.`
+    );
+    console.log(message);
   }
   for (const column of excessColumns) {
-    console.log(`[${colors.red("ERROR")} column] Model '${colors.green(model.name)}' has excess column '${colors.blue(column)}'.`);
+    const message = getError(
+      checkerName,
+      `Model '${formatModel(model.name)}' has excess column ${formatColumn(column)}.`
+    );
+    console.log(message);
   }
 }
