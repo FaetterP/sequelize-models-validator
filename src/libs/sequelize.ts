@@ -7,7 +7,8 @@ export type ConnectionOptionsType = {
   dialect?: Dialect;
   host: string;
   database: string;
-  user: string;
+  user?: string;
+  username?: string;
   password: string;
 };
 
@@ -21,7 +22,7 @@ export async function connect(): Promise<Sequelize> {
     dialect: options.dialect || "postgres",
     host: options.host,
     database: options.database,
-    username: options.user,
+    username: options.user || options.username,
     password: options.password,
     models: [fullPath],
     logging: false,
