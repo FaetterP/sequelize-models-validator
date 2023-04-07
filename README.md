@@ -47,3 +47,6 @@ npx validate-models ./src/models
   Проверяет, совпадают ли поля в модели со столбцами в бд.
   + `[ERROR column] Model '${name}' miss column '${column}'.` - данный столбец есть в бд, но отсутствует в модели.
   + `[ERROR column] Model '${name}' has excess column '${column}'.` - такого столбца нет в бд.
++ ServiceTables  
+  Проверяет, совпадает ли название таблицы с названием служебных таблиц (attributes, sequences, foreign_tables и т.д.).
+  + `[ERROR service-tables] Table with name ${name} is service table in database.` - указанное название таблицы является служебным.
