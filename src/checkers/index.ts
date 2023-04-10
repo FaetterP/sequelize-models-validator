@@ -3,6 +3,7 @@ import { checkColumns } from "./columns";
 import { checkParanoid } from "./paranoid";
 import { checkTimestamps } from "./timestamps";
 import { checkUnderscore } from "./underscore";
+import { checkServiceTables } from "./serviceTables";
 
 const checkers: ((
   model: ModelCtor<Model<any, any>>
@@ -11,6 +12,7 @@ const checkers: ((
   checkParanoid,
   checkUnderscore,
   checkColumns,
+  checkServiceTables,
 ];
 
 export async function checkAll(model: ModelCtor<Model<any, any>>) {
