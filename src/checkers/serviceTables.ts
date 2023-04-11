@@ -9,7 +9,7 @@ export async function checkServiceTables(model: ModelCtor<Model<any, any>>) {
   if (tables.length === 0) {
     const sequelize = await getSequelize();
     const objectsWithTables = await sequelize!.query<[string]>(
-      `SELECT table_name FROM information_schema.tables`,
+      `SELECT table_name FROM information_schema.tables WHERE table_schema='information_schema' OR table_schema='pg_catalog';`,
       { type: QueryTypes.SELECT }
     );
     tables = objectsWithTables.map((item) => item[0]);
