@@ -1,52 +1,110 @@
 # sequelize-models-validator
 
-Пакет npm для проверки, правильно ли составлены модели.
+An npm package for validating models.
 
-## Установка
+Special thanks to [Robert Stanislavovich](https://github.com/robert-stanislavovich).
 
-Подключается пакет через npm.
+## Installation
+
+The package is connected via npm.
 
 ```bash
 npm i sequelize-models-validator
 ```
 
-## Использование
+Or yarn:
 
-После установки станет доступна команда:
+```bash
+yarn add sequelize-models-validator
+```
+
+## Config
+
+To get connection data, the [Config](https://www.npmjs.com/package/config) package is used.  
+Available config options:
+
+Separated (user):
+
+```json
+{
+  "db": {
+    "dialect": "postgres",
+    "host": "example.com",
+    "port": 5432,
+    "user": "user",
+    "password": "pass",
+    "database": "dbname"
+  }
+}
+```
+
+Separated (username):
+
+```json
+{
+  "db": {
+    "dialect": "postgres",
+    "host": "example.com",
+    "port": 5432,
+    "username": "user",
+    "password": "pass",
+    "database": "dbname"
+  }
+}
+```
+
+URI:
+
+```json
+{
+  "db": {
+    "uri": "postgres://user:pass@example.com:5432/dbname"
+  }
+}
+```
+
+.sqlite file (sqlite only)
+
+```json
+{
+  "db": {
+    "dialect": "sqlite",
+    "storage": "path/to/database.sqlite"
+  }
+}
+```
+
+## Usage
+
+After installation you can use the command to check models:
 
 ```bash
 npx validate-models ./src/models
 ```
 
-В качестве аргумента передаётся путь к папке с моделями. Важно, что этот путь должен быть относительным для места, откуда запускается скрипт.  
-Также эта команда поддерживает как js модели, так и ts.  
-  
-Примеры использования:  
+The path to the folder with models is passed as an argument. It is important that this path must be relative to the location where the script is run from.  
+Also this command supports both js models and ts.
+
+Examples of using:  
 ![image](https://user-images.githubusercontent.com/56697273/229765791-430bc153-bdd1-44dc-a375-de29dbd33a89.png)
 ![image](https://user-images.githubusercontent.com/56697273/229765854-7717de0f-1657-46aa-8c95-cf784a3fea8f.png)
 
-## Модули проверок
+## Check modules
 
-Модель проходит несколько проверок, и каждая из них, если найдёт ошибку, выведет её в консоль.  
-Ниже будут перечислены все проверки и возможные сообщения.
+The model goes through several checks, and each of them, if it finds an error, will display it in the console.  
+All checks and possible messages will be listed below.
 
-+ Timestamps  
-  Проверяет модель, если `timestamps: true`.  
-  В такой модели должны быть поля `createdAt` и `updatedAt`. Также если `underscore: false`, то будет искать `created_at` и `updated_at`.
-  + `[WARN timestamps] Model '${name}' doesn't contain '${column}'.` - модель не содержит указанный столбец.
-+ Paranoid  
-  Проверяет модель, если `paranoid: true`.  
-  В такой модели должно быть поле `deletedAt` или `deleted_at`, если `underscored: false`.
-  + `[ERROR paranoid] ${name}: paranoid is true, but timestamps not enabled.` - для работы paranoid требуется включить timestamps.
-  + `[WARN paranoid] Model '${name}' doesn't contain '${column}'.` - модель не содержит указанный столбец.
-+ Underscore  
-  Проверяет модель, если `underscore: true`.  
-  В такой модели все поля должны быть в camelCase. Это не влияет на бд, только на модель.
-  + `[WARN underscore] Model '${name}' contains field '${column}'.` - модель содержит поле, содержащее `_`. Это поле не обязательно будет в самой модели. Может быть такое, что какая-то другая модель, ссылаясь на это поле по внешнему ключу, обращается к нему через snake_case.
-+ Columns  
-  Проверяет, совпадают ли поля в модели со столбцами в бд.
-  + `[ERROR column] Model '${name}' miss column '${column}'.` - данный столбец есть в бд, но отсутствует в модели.
-  + `[ERROR column] Model '${name}' has excess column '${column}'.` - такого столбца нет в бд.
-+ ServiceTables  
-  Проверяет, совпадает ли название таблицы с названием служебных таблиц (attributes, sequences, foreign_tables и т.д.).
-  + `[ERROR service-tables] Table with name ${name} is service table in database.` - указанное название таблицы является служебным.
+- Timestamps
+  - `[WARN timestamps] Model '${name}' doesn't contain '${column}'.` - the model does not contain the specified column.
+- Paranoid
+  - `[ERROR paranoid] ${name}: paranoid is true, but timestamps not enabled.` - paranoid option requires timestamps.
+  - `[WARN paranoid] Model '${name}' doesn't contain '${column}'.` - the model does not contain the specified column.
+- Underscore
+  - `[WARN underscore] Model '${name}' contains field '${column}'.` - the model contains a field containing `_`. This field does not have to be in the model itself. It may be that some other model, referring to this field by a foreign key, accesses it through snake_case.
+- Columns  
+  Checks if the fields in the model match the columns in the database.
+  - `[ERROR column] Model '${name}' miss column '${column}'.` - this column is in the database, but not in the model.
+  - `[ERROR column] Model '${name}' has excess column '${column}'.` - there is no such column in the database.
+- ServiceTables  
+  Checks if the table name matches the service table name (attributes, sequences, foreign_tables, etc).
+  - `[ERROR service-tables] Table with name ${name} is service table in database.` - the specified name of the table is service.

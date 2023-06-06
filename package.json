@@ -1,6 +1,6 @@
 {
   "name": "sequelize-models-validator",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "Package to checking sequelize models",
   "main": "index.js",
   "scripts": {
