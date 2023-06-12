@@ -1,16 +1,24 @@
 {
   "name": "sequelize-models-validator",
-  "version": "1.1.8",
+  "version": "2.0.1",
   "description": "Package to checking sequelize models",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FaetterP/sequelize-models-validator.git"
   },
-  "keywords": ["sequelize", "models", "postgres", "validation", "script"],
+  "keywords": [
+    "sequelize",
+    "models",
+    "postgres",
+    "validation",
+    "script",
+    "test"
+  ],
   "author": "FaetterP",
   "license": "ISC",
   "bugs": {

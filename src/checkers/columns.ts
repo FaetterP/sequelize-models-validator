@@ -1,7 +1,7 @@
-import { Model, ModelCtor, QueryTypes } from "sequelize";
+import { Model, ModelCtor } from "sequelize";
 import { snakeToCamel } from "./../utils/converts";
-import { getSequelize } from "../libs/sequelize";
 import { formatColumn, formatModel, getError } from "../utils/messages";
+import { getTableColumns } from "../utils/database";
 
 const checkerName = "columns";
 
@@ -9,13 +9,7 @@ export async function checkColumns(model: ModelCtor<Model<any, any>>) {
   const attributes = model.getAttributes();
   const columnsModel = Object.keys(attributes);
 
-  const sequelize = await getSequelize();
-  const objectsWithColumns = await sequelize!.query<{
-    column_name: string;
-  }>(
-    `SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${model.tableName}'`,
-    { type: QueryTypes.SELECT }
-  );
+  const objectsWithColumns = await getTableColumns(model.tableName);
   const columnsDb = objectsWithColumns.map((item) =>
     snakeToCamel(item.column_name)
   );

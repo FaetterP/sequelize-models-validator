@@ -108,3 +108,5 @@ All checks and possible messages will be listed below.
 - ServiceTables  
   Checks if the table name matches the service table name (attributes, sequences, foreign_tables, etc).
   - `[ERROR service-tables] Table with name ${name} is service table in database.` - the specified name of the table is service.
+- DataType
+  - `[ERROR dataType] DataType of field ${model}/${column} is defined incorrectly. Database: ${type}. Model: ${type}. Correct type: ${type}` - column types in the _database_ and in the _model_ don't match. Try set _correct type_ in model.

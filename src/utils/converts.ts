@@ -5,3 +5,7 @@ export function snakeToCamel(str: string) {
       group.toUpperCase().replace("-", "").replace("_", "")
     );
 }
+
+export function camelToSnake(str: string) {
+  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+}
