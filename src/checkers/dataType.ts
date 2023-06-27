@@ -16,23 +16,31 @@ export async function checkDataTypes(model: ModelCtor<Model<any, any>>) {
   };
 
   for (const column in result) {
-    const columnSnake = camelToSnake(column);
-    const typeFromDb = await getColumnType(model.tableName, columnSnake);
-    const key = result[column].type.key;
+    try {
+      const columnSnake = camelToSnake(column);
+      const typeFromDb = await getColumnType(model.tableName, columnSnake);
+      const key = result[column].type.key;
 
-    if (!typeMap[key].includes(typeFromDb)) {
-      console.log(
-        getError(
-          checkerName,
-          `DataType of field ${formatModel(model.tableName)}/${formatColumn(
-            column
-          )} is defined incorrectly. Database: ${formatColumn(
-            typeFromDb
-          )}. Model: ${formatColumn(key)}. Correct type: ${formatColumn(
-            getDataType(typeFromDb)
-          )}.`
-        )
-      );
+      if (!typeMap[key]) {
+        console.log(getError(checkerName, `Key '${key}' not found.`));
+      }
+
+      if (!typeMap[key].includes(typeFromDb)) {
+        console.log(
+          getError(
+            checkerName,
+            `DataType of field ${formatModel(model.tableName)}/${formatColumn(
+              column
+            )} is defined incorrectly. Database: ${formatColumn(
+              typeFromDb
+            )}. Model: ${formatColumn(key)}. Correct type: ${formatColumn(
+              getDataType(typeFromDb)
+            )}.`
+          )
+        );
+      }
+    } catch (error) {
+      console.log(getError(checkerName, JSON.stringify(error)));
     }
   }
 }
