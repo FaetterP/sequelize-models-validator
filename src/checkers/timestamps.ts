@@ -1,32 +1,34 @@
 import { Model, ModelCtor } from "sequelize";
-import { formatColumn, formatModel, getWarning } from "../utils/messages";
+import { formatColumn, formatModel } from "../utils/messages";
+import { Problem } from "../types";
 
 const checkerName = "timestamps";
 
-export function checkTimestamps(model: ModelCtor<Model<any, any>>) {
-  const options = model.options;
+export function checkTimestamps(model: ModelCtor<Model<any, any>>): Problem[] {
+  const { timestamps, underscored } = model.options;
   const attributes = model.getAttributes();
-  const keys = Object.keys(attributes);
+  const problems: Problem[] = [];
 
-  if (!options.timestamps) {
-    return;
+  if (timestamps) {
+    const createdAtName = underscored ? "created_at" : "createdAt";
+    const updatedAtName = underscored ? "updated_at" : "updatedAt";
+
+    if (!(createdAtName in attributes)) {
+      problems.push({
+        checker: checkerName,
+        type: "warning",
+        message: `Model ${formatModel(model.name)} doesn't contain ${formatColumn(createdAtName)}.`,
+      });
+    }
+
+    if (!(updatedAtName in attributes)) {
+      problems.push({
+        checker: checkerName,
+        type: "warning",
+        message: `Model ${formatModel(model.name)} doesn't contain ${formatColumn(updatedAtName)}.`,
+      });
+    }
   }
 
-  let createdAtName = options.underscored ? "createdAt" : "created_at";
-  let updatedAtName = options.underscored ? "updatedAt" : "updated_at";
-
-  if (!keys.includes(createdAtName)) {
-    const message = getWarning(
-      checkerName,
-      `Model ${formatModel(model.name)} doesn't contain ${formatColumn(createdAtName)}.`
-    );
-    console.log(message);
-  }
-  if (!keys.includes(updatedAtName)) {
-    const message = getWarning(
-      checkerName,
-      `Model ${formatModel(model.name)} doesn't contain ${formatColumn(updatedAtName)}.`
-    );
-    console.log(message);
-  }
+  return problems;
 }

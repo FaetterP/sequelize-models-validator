@@ -1,71 +1,36 @@
 import { Sequelize } from "sequelize-typescript";
-import { Dialect } from "sequelize";
-import config from "config";
 import path from "node:path";
+import { ConnectionOptionsType } from "../types";
 
-type SeparatedOptions = {
-  dialect?: Dialect;
-  host: string;
-  port: number;
-  database: string;
-  user?: string;
-  username?: string;
-  password: string;
-};
+export async function connect(
+  options: any,
+): Promise<Sequelize> {
+  const modelsPath = path.join(process.cwd(), options.modelsPath!);
 
-type URIOptions = {
-  uri: string;
-};
-
-type SQLLiteOptions = {
-  dialect: "sqlite";
-  storage: string;
-};
-
-type ConnectionOptionsType = SeparatedOptions | URIOptions | SQLLiteOptions;
-
-let sequelize: Sequelize | undefined;
-
-export async function connect(): Promise<Sequelize> {
-  const options = config.get<ConnectionOptionsType>("db");
-  const fullPath = path.join(process.cwd(), process.argv[2]);
-
-  const sqlLiteOptions = options as SQLLiteOptions;
-  if (sqlLiteOptions.storage) {
-    sequelize = new Sequelize({
-      dialect: sqlLiteOptions.dialect,
-      storage: sqlLiteOptions.storage,
+  if (options.storage) {
+    var sequelize = new Sequelize({
+      dialect: "sqlite",
+      storage: options.storage,
+      models: [modelsPath],
+      logging: false,
     });
-
-    return sequelize
+  } else if (options.uri) {
+    sequelize = new Sequelize(options.uri, {
+      models: [modelsPath],
+      logging: false,
+    });
+  } else {
+    sequelize = new Sequelize({
+      dialect: options.dialect || "postgres",
+      host: options.host,
+      port: options.port,
+      database: options.database,
+      username: options.username,
+      password: options.password,
+      models: [modelsPath],
+      logging: false,
+    });
   }
-
-  const uriOptions = options as URIOptions
-  if(uriOptions.uri){
-    sequelize = new Sequelize(uriOptions.uri)
-    
-    return sequelize
-  }
-
-  const separatedOptions = options as SeparatedOptions
-  sequelize = new Sequelize({
-    dialect: separatedOptions.dialect || "postgres",
-    host: separatedOptions.host,
-    port: separatedOptions.port,
-    database: separatedOptions.database,
-    username: separatedOptions.user || separatedOptions.username,
-    password: separatedOptions.password,
-    models: [fullPath],
-    logging: false,
-  });
 
   return sequelize;
-}
-
-export async function getSequelize(): Promise<Sequelize> {
-  if (!sequelize) {
-    await connect();
-  }
-
-  return sequelize!;
 }

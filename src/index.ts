@@ -1,17 +1,31 @@
 #! /usr/bin/env node
-import { checkAll } from "./checkers";
-import { connect } from "./libs/sequelize";
-import { register } from "ts-node";
+import "dotenv/config";
+import { getRawReport } from "./getRawReport";
+import { Envs } from "./types";
+import { getConfigValues } from "./utils/config";
+import path from "path";
+import { getError, getSuccess, getWarning } from "./utils/messages";
 
 (async () => {
-  register();
+  const envs: Envs = require(
+    path.resolve(process.cwd(), "sequelize-validator.json"),
+  );
+  const config = getConfigValues(envs);
+  const report = await getRawReport(config);
 
-  const sequelize = await connect();
+  for (const item of report) {
+    let message = "";
+    if (item.type === "error") {
+      message = getError(item.checker, item.message);
+    } else if (item.type === "warning") {
+      message = getWarning(item.checker, item.message);
+    }
+    console.log(message);
+  }
 
-  const rawModels = sequelize.models;
-  const models = Object.values(rawModels);
-
-  for (const model of models) {
-    await checkAll(model);
+  if (report.some((problem) => problem.type === "error")) {
+    process.exit(1);
+  } else if (report.length === 0) {
+    console.log(getSuccess());
   }
 })();

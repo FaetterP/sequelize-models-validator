@@ -1,29 +1,33 @@
 import { Model, ModelCtor } from "sequelize";
-import { formatColumn, formatModel, getError } from "../utils/messages";
+import { formatColumn, formatModel } from "../utils/messages";
+import { Problem } from "../types";
 
 const checkerName = "paranoid";
 
-export function checkParanoid(model: ModelCtor<Model<any, any>>) {
-  const options = model.options;
+export function checkParanoid(model: ModelCtor<Model<any, any>>): Problem[] {
+  const { paranoid, timestamps, underscored } = model.options;
   const attributes = model.getAttributes();
-  const keys = Object.keys(attributes);
+  const problems: Problem[] = [];
 
-  if (!options.paranoid) {
-    return;
+  if (paranoid) {
+    if (!timestamps) {
+      problems.push({
+        checker: checkerName,
+        type: "error",
+        message: `${formatModel(model.tableName)}: paranoid is true, but timestamps not enabled.`,
+      });
+    }
+
+    const deletedAtName = underscored ? "deletedAt" : "deleted_at";
+
+    if (!(deletedAtName in attributes)) {
+      problems.push({
+        checker: checkerName,
+        type: "error",
+        message: `Model ${formatModel(model.name)} doesn't contain ${formatColumn(deletedAtName)}.`,
+      });
+    }
   }
 
-  if (!options.timestamps) {
-    const message = getError(
-      checkerName,
-      `${formatModel(model.tableName)}: paranoid is true, but timestamps not enabled.`
-    );
-    console.log(message);
-  }
-
-  let deletedAtName = options.underscored ? "deletedAt" : "deleted_at";
-
-  if (!keys.includes(deletedAtName)) {
-    const message = getError(checkerName, `Model ${formatModel(model.name)} doesn't contain ${formatColumn(deletedAtName)}.`)
-    console.log(message);
-  }
+  return problems;
 }

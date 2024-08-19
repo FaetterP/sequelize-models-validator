@@ -1,5 +1,9 @@
 import colors from "colors";
 
+export function getSuccess() {
+  return `[${colors.green("SUCCESS")}]`;
+}
+
 export function getWarning(name: string, message: string) {
   return `[${colors.yellow("WARN")} ${name}] ${message}`;
 }

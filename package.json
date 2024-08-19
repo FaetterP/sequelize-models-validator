@@ -1,11 +1,10 @@
 {
   "name": "sequelize-models-validator",
-  "version": "1.2.2",
+  "version": "2.1.1",
   "description": "Package to checking sequelize models",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -27,14 +26,13 @@
   "homepage": "https://github.com/FaetterP/sequelize-models-validator#readme",
   "dependencies": {
     "colors": "^1.4.0",
-    "config": "^3.3.9",
     "sequelize": "^6.30.0",
-    "sequelize-typescript": "^2.1.5",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.0.3"
+    "sequelize-typescript": "^2.1.5"
   },
   "devDependencies": {
-    "@types/config": "^3.3.0"
+    "prettier": "^3.3.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
   },
   "bin": {
     "validate-models": "/dist/index.js"

@@ -1,12 +1,17 @@
-import { Model, ModelCtor } from "sequelize";
+import { Model, ModelCtor, Sequelize } from "sequelize";
 import { getColumnType } from "../utils/database";
 import { camelToSnake } from "../utils/converts";
-import { formatColumn, formatModel, getError } from "../utils/messages";
+import { formatColumn, formatModel } from "../utils/messages";
+import { Problem } from "../types";
 
 const checkerName = "dataType";
 const key = "sequelize:attributes";
 
-export async function checkDataTypes(model: ModelCtor<Model<any, any>>) {
+export async function checkDataTypes(
+  model: ModelCtor<Model<any, any>>,
+  sequelize: Sequelize,
+): Promise<Problem[]> {
+  const problems: Problem[] = [];
   const result = Reflect.getMetadata(key, model.prototype) as {
     [key: string]: {
       type: { types: [Object]; key: string };
@@ -16,33 +21,48 @@ export async function checkDataTypes(model: ModelCtor<Model<any, any>>) {
   };
 
   for (const column in result) {
-    try {
-      const columnSnake = camelToSnake(column);
-      const typeFromDb = await getColumnType(model.tableName, columnSnake);
-      const key = result[column].type.key;
+    const columnSnake = camelToSnake(column);
+    const typeFromDb = await getColumnType(
+      model.tableName,
+      columnSnake,
+      sequelize,
+    );
+    const key = result[column].type.key;
 
-      if (!typeMap[key]) {
-        console.log(getError(checkerName, `Key '${key}' not found.`));
-      }
+    if (!typeFromDb) {
+      problems.push({
+        checker: checkerName,
+        type: "error",
+        message: `Column '${model.tableName}/${columnSnake}' not found`,
+      });
 
-      if (!typeMap[key].includes(typeFromDb)) {
-        console.log(
-          getError(
-            checkerName,
-            `DataType of field ${formatModel(model.tableName)}/${formatColumn(
-              column
-            )} is defined incorrectly. Database: ${formatColumn(
-              typeFromDb
-            )}. Model: ${formatColumn(key)}. Correct type: ${formatColumn(
-              getDataType(typeFromDb)
-            )}.`
-          )
-        );
-      }
-    } catch (error) {
-      console.log(getError(checkerName, JSON.stringify(error)));
+      continue;
+    }
+
+    if (!typeMap[key]) {
+      problems.push({
+        checker: checkerName,
+        type: "error",
+        message: `Key '${key}' not found.`,
+      });
+    }
+
+    if (!typeMap[key].includes(typeFromDb)) {
+      problems.push({
+        checker: checkerName,
+        type: "error",
+        message: `DataType of field ${formatModel(model.tableName)}/${formatColumn(
+          column,
+        )} is defined incorrectly. Database: ${formatColumn(
+          typeFromDb,
+        )}. Model: ${formatColumn(key)}. Correct type: ${formatColumn(
+          getDataType(typeFromDb),
+        )}.`,
+      });
     }
   }
+
+  return problems;
 }
 
 function getDataType(dbType: string) {
